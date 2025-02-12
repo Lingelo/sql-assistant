@@ -1,0 +1,4 @@
+.env
+*.sql
+.idea
+node_modules
