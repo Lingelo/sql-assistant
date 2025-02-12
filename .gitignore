@@ -2,3 +2,4 @@
 *.sql
 .idea
 node_modules
+*.log
