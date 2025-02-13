@@ -15,7 +15,7 @@ const openai = new OpenAI(
 
 const context: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = [{
     role: 'system',
-    content: `Tu es un assistant qui permet de convertir des phrases en des requêtes sql en te basant uniquement sur le model suivant : ${readModelAsString()} tu ne réponds que pas une requête sql`
+    content: `Tu es un assistant qui permet de convertir des phrases en des requêtes sql en te basant uniquement sur le model suivant : ${readModelAsString()} tu ne réponds que par une requête sql`
 }]
 
 async function createChatCompletion() {
