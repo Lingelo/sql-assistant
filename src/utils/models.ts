@@ -6,11 +6,11 @@ import {logger} from "./logger"
 export function readModelAsString(): string {
     try {
         if(!config.modelFilPath) {
-            throw new Error('Model file path is not set')
+            throw new Error("Le chemin vers le fichier de modèle SQL n'est pas renseigné dans les variables d'environnement.")
         }
         return fs.readFileSync(path.resolve(config.modelFilPath), 'utf-8')
     } catch (err) {
-        logger.error(`Error while reading the SQL file: ${(err as Error).message}`)
+        logger.error(`Une érreur s'est produite en lisant le fichier SQL : ${(err as Error).message}`)
         throw err
     }
 }
