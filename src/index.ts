@@ -1,6 +1,6 @@
 import * as readline from "node:readline"
 import kleur from "kleur"
-import {Chat} from "./chat/chat";
+import {Chat} from "./chat/chat"
 
 async function start() {
     const chat = new Chat()
