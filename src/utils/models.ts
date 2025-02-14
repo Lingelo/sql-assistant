@@ -14,4 +14,3 @@ export function readModelAsString(): string {
         throw err
     }
 }
-
