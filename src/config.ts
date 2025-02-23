@@ -16,6 +16,7 @@ interface Config {
         modelFilePath: string
         dialect: 'postgres' | 'mysql' | 'sqlite'
     },
+    mode: 'tools' | 'chat'
 }
 
 export const config: Config = {
@@ -35,6 +36,7 @@ export const config: Config = {
         database: process.env.DB_DATABASE ?? '',
         modelFilePath: process.env.MODEL_PATH ?? '',
         dialect: (process.env.DIALECT as 'postgres' | 'mysql' | 'sqlite') ?? 'postgres',
-    }
+    },
+    mode: (process.env.MODE as 'tools' | 'chat') ?? 'chat'
 
 }

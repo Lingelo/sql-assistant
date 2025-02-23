@@ -1,14 +1,16 @@
 import * as readline from "node:readline"
 import kleur from "kleur"
-import {Chat} from "./chat/chat"
 import {sequelize} from "./utils/data-base.config";
+import {ChatWithTools} from "./chat/chat-with-tools";
+import {config} from "./config";
+import {BasicChat} from "./chat/basic-chat";
 
 async function start() {
 
     await sequelize.authenticate()
     await sequelize.sync({ force: false })
 
-    const chat = new Chat()
+    const chat = config.mode === 'tools' ? new ChatWithTools() : new BasicChat()
 
     console.log(kleur.green("Bienvenue dans l'assistant SQL, que dois-je traduire ?"))
     const line = readline.createInterface({
