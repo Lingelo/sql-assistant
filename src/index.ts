@@ -7,8 +7,10 @@ import {BasicChat} from "./chat/basic-chat";
 
 async function start() {
 
-    await sequelize.authenticate()
-    await sequelize.sync({ force: false })
+    if(config.mode === 'tools') {
+        await sequelize.authenticate()
+        await sequelize.sync({ force: false })
+    }
 
     const chat = config.mode === 'tools' ? new ChatWithTools() : new BasicChat()
 
