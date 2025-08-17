@@ -39,15 +39,14 @@ export class ChatWithTools extends Chat {
     }
 
     async handleResponse(message: ChatCompletionsAPI.ChatCompletionMessage): Promise<void> {
-        if (message.tool_calls) {
-            const functionName = message.tool_calls[0].function.name;
-            // @ts-ignore
-            const query = message.tool_calls[0].function.arguments;
-            const toolCallId = message.tool_calls[0].id
-            await this.execute(functionName, toolCallId, query)
-
+        if (message.tool_calls && message.tool_calls.length > 0) {
+            const toolCall = message.tool_calls[0];
+            const functionName = toolCall.function.name;
+            const args = toolCall.function.arguments;
+            const toolCallId = toolCall.id;
+            await this.execute(functionName, toolCallId, args);
         } else {
-            console.log(kleur.green(`${message.content}\n`))
+            console.log(kleur.green(`${message.content}\n`));
         }
     }
 

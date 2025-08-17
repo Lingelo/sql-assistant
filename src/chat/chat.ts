@@ -9,6 +9,8 @@ export abstract class Chat {
     protected openai: OpenAI
     protected context: OpenAI.Chat.Completions.ChatCompletionMessageParam[] = []
     protected tools?: Array<ChatCompletionTool> = []
+    private readonly maxContextLength = 20
+    private readonly maxTokensPerMessage = 4000
 
     protected constructor() {
         this.openai = new OpenAI(
@@ -21,8 +23,42 @@ export abstract class Chat {
 
     protected abstract handleResponse(message: ChatCompletionsAPI.ChatCompletionMessage): Promise<void>
 
+    private trimContext(): void {
+        // Garder toujours le message système (premier message)
+        const systemMessage = this.context[0];
+        let messagesToKeep = this.context.slice(1);
+
+        // Limiter le nombre de messages
+        if (messagesToKeep.length > this.maxContextLength) {
+            messagesToKeep = messagesToKeep.slice(-this.maxContextLength);
+        }
+
+        // Limiter la taille des messages trop longs
+        messagesToKeep = messagesToKeep.map(msg => {
+            if (msg.role === 'user' && typeof msg.content === 'string' && msg.content.length > this.maxTokensPerMessage) {
+                return {
+                    ...msg,
+                    content: msg.content.substring(0, this.maxTokensPerMessage) + '... [message tronqué]'
+                };
+            }
+            return msg;
+        });
+
+        this.context = [systemMessage, ...messagesToKeep];
+    }
+
     public pushToContext(message: OpenAI.Chat.Completions.ChatCompletionMessageParam): void {
-        this.context.push(message)
+        this.context.push(message);
+        this.trimContext();
+    }
+
+    public clearContext(): void {
+        const systemMessage = this.context[0];
+        this.context = [systemMessage];
+    }
+
+    public getContextLength(): number {
+        return this.context.length;
     }
 
     public async createChatCompletion(loaderText: string = 'Assistant SQL:'): Promise<void> {
