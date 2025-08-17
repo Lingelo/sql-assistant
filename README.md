@@ -7,9 +7,11 @@
 ## 🌟 Fonctionnalités
 
 - **🔍 Conversion en SQL :** Transformez des phrases simples comme *"Liste tous les clients avec un compte actif"* en requêtes SQL prêtes à l'emploi.
-- **⚡ Exécution instantanée des requêtes SQL :** L'assistant peut se connecter à une base de données réelle (PostgreSQL, MySQL ou SQLite) pour exécuter directement les requêtes générées et afficher les résultats.
+- **⚡ Exécution sécurisée des requêtes :** Exécution directe avec validation de sécurité et formatage élégant des résultats en tableau.
 - **📄 Chargement de modèle SQL personnalisé :** Fournissez un fichier `.sql` décrivant la structure de votre base de données pour améliorer la précision et l'adéquation des requêtes générées.
-- **🖥️ Interface interactive :** Utilisation simple en ligne de commande avec des retours formatés et colorés.
+- **🖥️ Interface interactive avancée :** Commandes système, gestion d'erreurs robuste, et retours formatés colorés.
+- **🛡️ Sécurité renforcée :** Validation des requêtes, protection contre les injections SQL et gestion des environnements.
+- **⚙️ Outils de développement :** Scripts de build, linting, et formatage intégrés.
 
 ---
 
@@ -56,7 +58,10 @@ IA_MODEL_NAME=model-name
 # Configuration des logs
 LOG_LEVEL=info
 
-# Base de données
+# Mode d'exécution
+MODE=tools  # 'tools' pour exécution BDD, 'chat' pour génération seulement
+
+# Base de données (requis uniquement en mode 'tools')
 DB_HOST=localhost
 DB_PORT=5432
 DB_USERNAME=nom_utilisateur
@@ -78,12 +83,23 @@ Assurez-vous que les paramètres de la base de données sont corrects pour conne
 
 ```bash
 yarn start
+# ou en mode développement
+yarn dev
 ```
 
-### 2. Fonctionnalités disponibles :
+### 2. Commandes système disponibles :
+
+```text
+/help     - Affiche l'aide des commandes
+/clear    - Vide l'historique de conversation
+/context  - Affiche le nombre de messages en contexte
+/exit     - Quitte l'application
+```
+
+### 3. Fonctionnalités principales :
 
 #### a. 📝 **Génération de requêtes SQL**
-Interagissez avec l'assistant en décrivant vos besoins en langage naturel. Par exemple :
+Interagissez avec l'assistant en décrivant vos besoins en langage naturel :
 
 ```text
 Bienvenue dans l'assistant SQL, que dois-je traduire ?
@@ -93,37 +109,61 @@ Assistant SQL :
 SELECT * FROM produits WHERE prix > 100;
 ```
 
-#### b. ⚡ **Exécution directe des requêtes sur la base de données**
-Si votre base de données est correctement configurée dans le fichier `.env`, l'assistant peut exécuter la requête générée et retourner des résultats tels que :
+#### b. ⚡ **Exécution sécurisée avec formatage élégant**
+En mode `tools`, les requêtes sont exécutées avec validation et formatage :
 
 ```text
-Bienvenue dans l'assistant SQL, que dois-je traduire ?
-> Trouve tous les utilisateurs où l'email contient 'example.com'.
+> Trouve tous les utilisateurs actifs
 
-Assistant SQL :
-SELECT * FROM users WHERE email LIKE '%example.com%';
+✅ Requête exécutée avec succès (45ms)
 
-Exécution des résultats sur la base de données 🕒…
-| id | username | email             | created_at          |
-|----|----------|-------------------|---------------------|
-| 1  | johndoe  | john@example.com  | 2023-01-10 12:00:00|
-...
+┌─────┬──────────┬───────────────────┬─────────────────────┐
+│ id  │ username │ email             │ created_at          │
+├─────┼──────────┼───────────────────┼─────────────────────┤
+│ 1   │ johndoe  │ john@example.com  │ 2023-01-10 12:00:00│
+│ 2   │ janedoe  │ jane@example.com  │ 2023-01-11 08:30:00│
+└─────┴──────────┴───────────────────┴─────────────────────┘
 ```
+
+---
+
+## 🛠️ Scripts de développement
+
+```bash
+yarn build          # Compile TypeScript vers /dist
+yarn dev            # Mode développement avec ts-node
+yarn lint           # Vérifie le code avec ESLint
+yarn lint:fix       # Corrige automatiquement les erreurs
+yarn format         # Formate le code avec Prettier
+yarn format:check   # Vérifie le formatage sans modifier
+yarn clean          # Supprime le dossier dist/
+```
+
+---
+
+## 🔒 Sécurité et validation
+
+- **Validation des requêtes :** Protection contre les requêtes potentiellement dangereuses
+- **Gestion d'erreurs :** Logging détaillé et messages d'erreur informatifs
+- **Variables d'environnement :** Validation automatique au démarrage
+- **Gestion du contexte :** Limitation intelligente pour éviter la surcharge mémoire
+- **Types TypeScript :** Code typé pour une meilleure robustesse
 
 ---
 
 ## 📌 Notes importantes
 
-- Si aucun fichier `.sql` ou modèle de données n'est fourni, l'intelligence artificielle peut encore fonctionner pour des requêtes générales, mais ses performances seront meilleures avec un modèle chargé.
-- Lors de l'exécution directe des requêtes SQL ⚠️ :
-   - Assurez-vous que la base de données est bien accessible.
-   - Limitez les requêtes d'écriture (`INSERT`, `UPDATE`, `DELETE`) si vous travaillez sur un environnement sensible.
-- L'assistant prend en charge les bases **PostgreSQL**, **MySQL**, et **SQLite**.
+- **Modes d'exécution :** 
+  - `MODE=chat` : Génération de requêtes uniquement
+  - `MODE=tools` : Génération + exécution sécurisée
+- **Performance :** Meilleure avec un fichier `.sql` de structure de base
+- **Sécurité :** Validation automatique des requêtes dangereuses
+- **Support BDD :** PostgreSQL, MySQL, et SQLite
 
 ---
 
 ## 🤝 Support
 
-Si vous avez des questions, des suggestions ou rencontrez des problèmes, n'hésitez pas à [ouvrir une issue](https://github.com) sur le repo GitHub. Nous sommes là pour vous aider !
+Si vous avez des questions, des suggestions ou rencontrez des problèmes, n'hésitez pas à [ouvrir une issue](https://github.com) sur le repo GitHub. Nous sommes là pour vous aider !
 
-✨ Bon usage et profitez de votre assistant SQL ! ✨
+✨ Bon usage et profitez de votre assistant SQL amélioré ! ✨
